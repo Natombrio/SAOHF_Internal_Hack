@@ -1,4 +1,4 @@
-// Created with ReClass.NET 1.2 by KN4CK3R
+#include <iostream>
 #define STR_MERGE_IMPL(a, b) a##b
 #define STR_MERGE(a, b) STR_MERGE_IMPL(a, b)
 #define MAKE_PAD(size) STR_MERGE(_pad, __COUNTER__)[size]
@@ -10,7 +10,7 @@ class ActorEntity
 {
 public:
 
-	union {
+    union {
         //              Type     Name    Offset
         uintptr_t vTable;
         DEFINE_MEMBER_N(Vector3, coordinates, 0x00E0);
@@ -36,7 +36,15 @@ public:
         DEFINE_MEMBER_N(int16_t, dexterity, 0x02CE);
         DEFINE_MEMBER_N(int16_t, accuracy, 0x02D4);
         DEFINE_MEMBER_N(int16_t, evasion, 0x02D6);
+        DEFINE_MEMBER_N(char *, name, 0x028B0);
+        DEFINE_MEMBER_N(char *, name2, 0x028B8);
+        DEFINE_MEMBER_N(char *, name3, 0x028C0);
     };
+
+    float distance;
+
+
+    friend std::ostream& operator<<(std::ostream& os, const Vector3& coords);
 
 }; //Size: 0x6AD0
 
@@ -77,3 +85,13 @@ public:
     ActorEntity * ents[100];
 
 };
+
+static bool isUnknownEnt(uintptr_t entType) {
+    return entType != PlayerEntity::vTableValue && entType != FriendlyNpcEntity::vTableValue && entType != PartymemEntity::vTableValue && entType != MonsterEntity::vTableValue;
+}
+
+std::ostream& operator<<(std::ostream& os, const Vector3& coords)
+{
+    os << coords.X << ", " << coords.Y << ", " << coords.Z;
+    return os;
+}
